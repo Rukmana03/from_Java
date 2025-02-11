@@ -1,0 +1,122 @@
+.container {
+    width: 50%;
+    margin: auto;
+    background-color: #7a9c31;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+fieldset {
+     
+    border: none; 
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    border-radius: 10px; 
+    padding: 15px;
+    margin-bottom: 20px;
+    justify-content: left;
+}
+
+
+legend {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    padding: 5px;
+    border-radius: 5px;
+    color: black;
+    width: fit-content;
+}
+
+select, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-top: 3px;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+}
+
+input {
+        width: 100%;
+        border: 1px solid #aaa;
+        border-radius: 5px;
+        padding: 8px;
+        gap:5px;
+    }
+
+.card-options {
+    display: flex;
+    gap: 10px;
+}
+
+.btn{
+    display: flex;
+    margin:auto;
+    justify-content: center;
+}
+
+button {
+    width: 30%;
+    padding: 10px;
+    background-color: #443a17;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #2e2810;
+}
+
+.form{
+    padding: 20px;
+    background-color: #a0b848;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    border-radius: 6px;
+    gap: 12px;
+}
+
+.from-card3{
+    padding: 20px;
+    background-color: #a0b848;
+    display: flex;
+    flex-direction: column;
+    border-radius: 6px;
+}
+
+.radio{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.radio img {
+    width: 40px; /* Ukuran gambar */
+    height: auto;
+    gap: 5px;
+}
+
+#alertBox {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 20px;
+    border: 1px solid black;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+}
+

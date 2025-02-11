@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link rel="stylesheet" href="style.css"> <!-- Pastikan CSS bisa diakses -->
+    
+</head>
+
+<body>
+    <div class="container">
+        <form action="/submit" method="post">  
+            <h2>Step 1: Your Details</h2>
+            <fieldset>
+                <div class="form">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required placeholder="First and last name">
+                </div>
+
+                <div class="form">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required placeholder="example@domain.com">
+                </div>
+
+                <div class="form">
+                    <label for="phone">Phone</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="Eg. +447500000000">
+                </div>
+            </fieldset>
+
+            <h2>Step 2: Delivery Address</h2>
+            <fieldset>
+                <div class="form">
+                    <label for="address">Address</label>
+                    <textarea id="address" name="address" maxlength="500"></textarea>
+                </div>
+
+                <div class="form">
+                    <label for="postcode">Post Code</label>
+                    <input type="text" id="postcode" name="postcode">
+                </div>
+
+                <div class="form">
+                    <label for="country">Country</label>
+                    <select id="country" name="country">
+                        <option value="USA">USA</option>
+                        <option value="UK">UK</option>
+                        <option value="Canada">Canada</option>
+                    </select>
+                </div>
+
+            </fieldset>
+
+            <h2>Step 3: Card Details</h2>
+            <fieldset>
+                <div class="form-card3">
+                    <label>Card Type</label>
+                    <div class="radio">
+                        <input type="radio" name="card_type" value="VISA">
+                        <img src="/asset/Visa.png" alt="Visa" class="img"> VISA
+
+                        <input type="radio" name="card_type" value="AmEx">
+                        <img src="/asset/amex.png" alt="AmEx" class="img"> AmEx
+
+                        <input type="radio" name="card_type" value="Mastercard">
+                        <img src="/asset/master.png" alt="Mastercard" class="img"> Mastercard
+                    </div>
+                </div>
+
+                <div class="form">
+                    <label for="card_number">Card Number</label>
+                    <input type="text" id="card_number" name="card_number" required>
+                </div>
+
+                <div class="form">
+                    <label for="security_code">Security Code</label>
+                    <input type="text" id="security_code" name="security_code">
+                </div>
+
+                <div class="form">
+                    <label for="name_on_card">Name on Card</label>
+                    <input type="text" id="name_on_card" name="name_on_card" placeholder="Exact name as on the card">
+                </div>
+            </fieldset>
+
+            <div class="btn">
+                <button type="submit">Buy It</button> 
+        </form>
+    </div>
+
+    <script src="script.js"></script>    
+</body>
+
+</html>
