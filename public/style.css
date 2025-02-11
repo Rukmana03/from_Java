@@ -95,17 +95,24 @@ button:hover {
     flex-direction: column;
     border-radius: 6px;
 }
-
 .radio{
     display: flex;
-    flex-direction: row;
+    gap: 20px;
     align-items: center;
 }
+.radio label {
+    display: flex; 
+    align-items: center; 
+}
 
-.radio img {
-    width: 40px; /* Ukuran gambar */
+.radio input[type="radio"] {
+    margin-right: 8px; 
+}
+
+.img {
+    width: 45px; 
     height: auto;
-    gap: 5px;
+    margin-right: 8px; 
 }
 
 #alertBox {

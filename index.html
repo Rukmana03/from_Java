@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form</title>
-    <link rel="stylesheet" href="./public/style.css"> <!-- Pastikan CSS bisa diakses -->
-    <link rel="stylesheet" href="./style.css"> <!-- Pastikan CSS bisa diakses -->
+    <link rel="stylesheet" href="/style.css"> 
     
 </head>
 
@@ -69,21 +68,24 @@
                 <div class="form-card3">
                     <label>Card Type</label>
                     <div class="radio">
-                        <input type="radio" name="card_type" value="VISA">
-                        <img src="/asset/Visa.png" alt="Visa" class="img"> VISA
-
-                        <input type="radio" name="card_type" value="AmEx">
-                        <img src="/asset/amex.png" alt="AmEx" class="img"> AmEx
-
-                        <input type="radio" name="card_type" value="Mastercard">
-                        <img src="/asset/master.png" alt="Mastercard" class="img"> Mastercard
-
+                        <label>
+                            <input type="radio" name="card_type" value="VISA">
+                            <img src="/asset/Visa.png" alt="Visa" class="img"> VISA
+                        </label>
+                        <label>
+                            <input type="radio" name="card_type" value="AmEx">
+                            <img src="/asset/amex.png" alt="AmEx" class="img"> AmEx
+                        </label>
+                        <label>
+                            <input type="radio" name="card_type" value="Mastercard">
+                            <img src="/asset/master.png" alt="Mastercard" class="img"> Mastercard
+                        </label>
                     </div>
                 </div>
 
                 <div class="form">
                     <label for="card_number">Card Number</label>
-                    <input type="number" id="card_number" name="card_number" required>
+                    <input type="text" id="card_number" name="card_number" required>
                     <span id="error-card_number"></span>
 
                 </div>
@@ -108,13 +110,7 @@
         </form>
     </div>
 
-    
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        import Swal from 'sweetalert2'
-
-// or via CommonJS
-const Swal = require('sweetalert2')
         document.getElementById("From").addEventListener("submit", function(event) {
             event.preventDefault();
 
@@ -161,7 +157,7 @@ const Swal = require('sweetalert2')
             }
 
             // Validasi telepon (minimal 11 digit)
-            if (phone.length < 11 || isNaN(phone)) {
+            if (phone.length < 11 ) {
                 errorphone.textContent = "Nomor telepon harus minimal 11 digit dan berupa angka!";
                 isValid = false;
             }
@@ -191,7 +187,15 @@ const Swal = require('sweetalert2')
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ name, email, phone, address, country, card_number, security, namecard })
+                    body: JSON.stringify({ 
+                        name: name, 
+                        email: email, 
+                        phone: phone, 
+                        address: address, 
+                        country: country, 
+                        card_number: card_number, 
+                        security: security, 
+                        namecard: namecard })
                 })
                 .then(response => response.json())  // Parse response sebagai JSON
                 .then(data => {
