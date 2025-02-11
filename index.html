@@ -5,28 +5,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registration Form</title>
-    <link rel="stylesheet" href="style.css"> <!-- Pastikan CSS bisa diakses -->
+    <link rel="stylesheet" href="./public/style.css"> <!-- Pastikan CSS bisa diakses -->
+    <link rel="stylesheet" href="./style.css"> <!-- Pastikan CSS bisa diakses -->
     
 </head>
 
 <body>
     <div class="container">
-        <form action="/submit" method="post">  
+        <form id="From">  
             <h2>Step 1: Your Details</h2>
             <fieldset>
                 <div class="form">
                     <label for="name">Name</label>
                     <input type="text" id="name" name="name" required placeholder="First and last name">
+                    <span id="error-name"></span>
                 </div>
 
                 <div class="form">
                     <label for="email">Email</label>
                     <input type="email" id="email" name="email" required placeholder="example@domain.com">
+                    <span id="error-email"></span>
+
                 </div>
 
                 <div class="form">
                     <label for="phone">Phone</label>
                     <input type="tel" id="phone" name="phone" required placeholder="Eg. +447500000000">
+                    <span id="error-phone"></span>
+
                 </div>
             </fieldset>
 
@@ -35,11 +41,15 @@
                 <div class="form">
                     <label for="address">Address</label>
                     <textarea id="address" name="address" maxlength="500"></textarea>
+                    <span id="error-address"></span>
+
                 </div>
 
                 <div class="form">
                     <label for="postcode">Post Code</label>
                     <input type="text" id="postcode" name="postcode">
+                    <span id="error-postcode"></span>
+                    
                 </div>
 
                 <div class="form">
@@ -49,6 +59,7 @@
                         <option value="UK">UK</option>
                         <option value="Canada">Canada</option>
                     </select>
+                    <span id="error-country"></span>
                 </div>
 
             </fieldset>
@@ -66,22 +77,29 @@
 
                         <input type="radio" name="card_type" value="Mastercard">
                         <img src="/asset/master.png" alt="Mastercard" class="img"> Mastercard
+
                     </div>
                 </div>
 
                 <div class="form">
                     <label for="card_number">Card Number</label>
-                    <input type="text" id="card_number" name="card_number" required>
+                    <input type="number" id="card_number" name="card_number" required>
+                    <span id="error-card_number"></span>
+
                 </div>
 
                 <div class="form">
-                    <label for="security_code">Security Code</label>
-                    <input type="text" id="security_code" name="security_code">
+                    <label for="security">Security Code</label>
+                    <input type="text" id="security" name="security">
+                    <span id="error-security"></span>
+
                 </div>
 
                 <div class="form">
-                    <label for="name_on_card">Name on Card</label>
-                    <input type="text" id="name_on_card" name="name_on_card" placeholder="Exact name as on the card">
+                    <label for="namecard">Name on Card</label>
+                    <input type="text" id="namecard" name="namecard" placeholder="Exact name as on the card">
+                    <span id="error-namecard"></span>
+
                 </div>
             </fieldset>
 
@@ -90,7 +108,108 @@
         </form>
     </div>
 
-    <script src="script.js"></script>    
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        import Swal from 'sweetalert2'
+
+// or via CommonJS
+const Swal = require('sweetalert2')
+        document.getElementById("From").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let phone = document.getElementById("phone").value;
+            let address = document.getElementById("address").value;
+            let postcode = document.getElementById("postcode").value;
+            let country = document.getElementById("country").value;
+            let card_number= document.getElementById("card_number").value;
+            let security = document.getElementById("security").value;
+            let namecard = document.getElementById("namecard").value;
+
+            let errorname = document.getElementById("error-name");
+            let erroremail = document.getElementById("error-email");
+            let errorphone = document.getElementById("error-phone");
+            let erroraddress = document.getElementById("error-address");
+            let errorpostcode = document.getElementById("error-postcode");
+            let errorcountry = document.getElementById("error-country");
+            let errorcard_number = document.getElementById("error-card_number");
+            let errorsecurity = document.getElementById("error-security");
+            let errornamecard = document.getElementById("error-namecard");
+            
+            errorname.textContent = "";
+            erroremail.textContent = "";
+            errorphone.textContent = "";
+            erroraddress.textContent = "";
+            errorcountry.textContent = "";
+            errorcard_number.textContent = "";
+            errorsecurity.textContent = "";
+            errornamecard.textContent = "";
+
+            let isValid = true;
+
+            if (name.length < 10) {
+                errorname.textContent = "Nama harus minimal 10 karakter!";
+                isValid = false;
+            }
+
+            // Validasi email (harus format email)
+            if (!email.includes('@')) {
+                erroremail.textContent = "Email harus format yang valid!";
+                isValid = false;
+            }
+
+            // Validasi telepon (minimal 11 digit)
+            if (phone.length < 11 || isNaN(phone)) {
+                errorphone.textContent = "Nomor telepon harus minimal 11 digit dan berupa angka!";
+                isValid = false;
+            }
+
+            // Validasi alamat (maksimal 500 karakter)
+            if (address.length > 500) {
+                erroraddress.textContent = "Alamat tidak boleh lebih dari 500 karakter!";
+                isValid = false;
+            }
+
+            // Validasi negara (dropdown harus dipilih)
+            if (!country) {
+                errorcountry.textContent = "Negara harus dipilih!";
+                isValid = false;
+            }
+
+            // Validasi kartu (wajib diisi)
+            if (!card_number) {
+                errorcard_number.textContent = "Nomor kartu harus diisi!";
+                isValid = false;
+            }
+
+
+            if (isValid) {
+                fetch('http://localhost:3000/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name, email, phone, address, country, card_number, security, namecard })
+                })
+                .then(response => response.json())  // Parse response sebagai JSON
+                .then(data => {
+                    // Tampilkan alert dari response backend
+                    alert(data.message);
+                    console.log(data);
+                    if (data.status === 'success') {
+                        document.getElementById("From").reset();  // Reset form jika berhasil
+                    }
+                })
+                .catch(error => {
+                    alert("Terjadi kesalahan dalam mengirim data ke server.");
+                    console.log("error");
+                    console.error(error);
+                });
+            }
+        });
+    </script>    
 </body>
 
 </html>
