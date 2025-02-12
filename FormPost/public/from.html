@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Language Form</title>
+    <link rel="stylesheet" href="./stylef.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
+      integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+  </head>
+  <body>
+    <div class="form-container">
+      <div class="form-header">
+        <span>📝 Language</span>
+        <button class="edit-btn">✏️</button>
+      </div>
+
+      <div class="form-body">
+        <div class="form-grup">
+          <label for="select-type">Select Type</label>
+          <select id="select-type">
+            <option value="radio">Radio</option>
+            <option value="checkbox">Checkbox</option>
+            <option value="text">Text</option>
+          </select>
+        </div>
+        <div class="form-grup">
+          <label for="label">Label</label>
+          <input type="text" id="label" value="Language" />
+        </div>
+        
+        <div class="option-container">
+          <div class="option-header">
+            <label>Options</label>
+          </div>
+          <div class="option-group">
+            <input type="text" value="English" />
+            <input type="text" value="English" />
+            <input type="checkbox" />
+            <button class="delete-btn1">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+          <div class="option-group">
+            <input type="text" value="Other" />
+            <input type="text" />
+            <input type="checkbox" />
+            <button class="delete-btn1">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+
+        <button class="add-option">+ Add Option</button>
+
+        <div class="form-grup1">
+          <label for="error-message">Error Message</label>
+          <input
+            type="text"
+            id="error-message"
+            value="This field is required"
+          />
+        </div>
+        <div class="form-grup2">
+          <label for="html-field">HTML after field</label>
+          <textarea id="html-field">
+            <input id="rtec_add_other_field" value="" type="hidden"></textarea
+          >
+        </div>
+        <div class="form-footer">
+          <button class="save-btn">Save Changes</button>
+          <button class="delete-btn">
+            <i class="fa-solid fa-trash-can"></i>delete
+          </button>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", async function () {
+        const addOptionBtn = document.querySelector(".add-option");
+        const optionContainer = document.querySelector(".option-container");
+        const saveBtn = document.querySelector(".save-btn");
+        const deleteBtn = document.querySelector(".delete-btn");
+
+        if (!addOptionBtn || !optionContainer) {
+          console.error(
+            "Elemen .add-option atau .option-container tidak ditemukan!"
+          );
+          return;
+        }
+
+        async function loadFormData() {
+          try {
+            const response = await fetch("http://localhost:3000/get-form");
+            const formData = await response.json();
+
+            if (formData && formData.options) {
+              document.getElementById("label").value = formData.label || "";
+              document.getElementById("error-message").value =
+                formData.errorMessage || "";
+              document.getElementById("select-type").value =
+                formData.selectType || "radio";
+              document.getElementById("html-field").value =
+                formData.htmlField || "";
+
+              document
+                .querySelectorAll(".option-group")
+                .forEach((opt) => opt.remove());
+
+              formData.options.forEach((opt) => {
+                addOption(opt.text1, opt.text2, opt.isChecked);
+              });
+            }
+          } catch (error) {
+            console.error("Gagal mengambil data:", error);
+            alert("Gagal mengambil data form dari server.");
+          }
+        }
+
+        // Fungsi untuk menambahkan opsi baru
+        function addOption(value1 = "", value2 = "", isChecked = false) {
+          const newOption = document.createElement("div");
+          newOption.classList.add("option-group");
+          newOption.innerHTML = `
+            <input type="text" value="${value1}">
+            <input type="text" value="${value2}">
+            <input type="checkbox" value="${isChecked}">
+            <button class="delete-btn1" ><i class="fa-solid fa-trash-can"></i></button>
+        `;
+
+          optionContainer.appendChild(newOption);
+        }
+
+        addOptionBtn.addEventListener("click", function () {
+          addOption("", "", false);
+        });
+        // Fungsi untuk menghapus opsi
+        optionContainer.addEventListener("click", function (event) {
+          if (event.target.closest(".delete-btn1")) {
+            event.target.closest(".option-group").remove();
+          }
+        });
+
+        // Fungsi untuk menyimpan data (bisa dikirim ke backend)
+        saveBtn.addEventListener("click", async function () {
+          const label = document.getElementById("label").value;
+          const errorMessage = document.getElementById("error-message").value;
+          const selectType = document.getElementById("select-type").value;
+          const htmlField = document.getElementById("html-field").value;
+
+          const options = [];
+          document.querySelectorAll(".option-group").forEach((option) => {
+            const text1 = option.querySelector(
+              "input[type='text']:nth-child(1)"
+            ).value;
+            const text2 = option.querySelector(
+              "input[type='text']:nth-child(2)"
+            ).value;
+            const isChecked = option.querySelector(
+              "input[type='checkbox']"
+            ).checked;
+            options.push({ text1, text2, isChecked });
+          });
+
+          const formData = {
+            label,
+            selectType,
+            options,
+            errorMessage,
+            htmlField,
+          };
+
+          try {
+            const response = await fetch("http://localhost:3000/save-form", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(formData),
+            });
+
+            const result = await response.json();
+            if (result.success) {
+              alert("From berhasil disimpan!");
+              console.log(formData);
+            } else {
+              console.log(formData);
+              alert("Gagal menyimpan form.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Terjadi kesalaham saat menyimpan daya.");
+          }
+        });
+
+        deleteBtn.addEventListener("click", async function () {
+          try {
+            const response = await fetch("http://localhost:3000/delete-form", {
+              method: "DELETE",
+            });
+            const result = await response.json();
+            if (result.success) {
+              alert("Form berhasil dihapus!");
+
+              // Reset semua input
+              document.getElementById("label").value = "";
+              document.getElementById("error-message").value = "";
+              document.getElementById("select-type").value = "radio";
+              document.getElementById("html-field").value = "";
+
+              // Hapus semua opsi dari tampilan
+              document.querySelector(".option-container").innerHTML = "";
+            } else {
+              alert("Gagal menghapus form.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Terjadi kesalahan saat menghapus data.");
+          }
+        });
+
+        loadFormData();
+      });
+    </script>
+  </body>
+</html>
