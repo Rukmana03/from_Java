@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Employee Details</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h2>Employee <b>Details</b></h2>
+      <div class="btn-container">
+      <button onclick="location.href='/'" class="btn">+ Add New</button>
+    </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email Address</th>
+            <th>Phone</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="employee-table">
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+
+      function fetchEmployees() {
+        fetch("api/employees")
+          .then((response) => response.json())
+          .then((data) => {
+            const tableBody = document.getElementById("employee-table");
+            tableBody.innerHTML = "";
+            data.forEach((emp) => {
+              tableBody.innerHTML += `
+              <tr id="row-${emp.id}">
+                    <td class="name">${emp.name}</td>
+                    <td class="email">${emp.email}</td>
+                    <td class="phone">${emp.phone}</td>
+                    <td class="actions">
+            <button class="action-btn edit" onclick="editEmployee(${emp.id})">
+                <i class="fas fa-pencil-alt"></i>
+            </button>
+            <button class="action-btn delete" onclick="deleteEmployee(${emp.id})">
+                <i class="fas fa-trash"></i>
+            </button>
+        </td>
+    </tr>
+                            `;
+            });
+          });
+      }
+      function editEmployee(id) {
+        const row = document.querySelector(`#row-${id}`);
+
+        const nameCell = row.querySelector(".name");
+        const emailCell = row.querySelector(".email");
+        const phoneCell = row.querySelector(".phone");
+
+        const originalName = nameCell.textContent;
+        const originalEmail = emailCell.textContent;
+        const originalPhone = phoneCell.textContent;
+
+        nameCell.innerHTML = `<input type="text" value="${originalName}" id="name-${id}" class="edit-input">`;
+        emailCell.innerHTML = `<input type="text" value="${originalEmail}" id="email-${id}" class="edit-input">`;
+        phoneCell.innerHTML = `<input type="text" value="${originalPhone}" id="phone-${id}" class="edit-input">`;
+
+        row.querySelector(".actions").innerHTML = `
+        <button class="save-btn" onclick="saveEmployee(${id})">✔️</button>
+        <button class="cancel-btn" onclick="cancelEdit(${id}, '${originalName}', '${originalEmail}', '${originalPhone}')">❌</button>
+    `;
+      }
+
+      function saveEmployee(id) {
+    const newName = document.querySelector(`#name-${id}`).value;
+    const newEmail = document.querySelector(`#email-${id}`).value;
+    const newPhone = document.querySelector(`#phone-${id}`).value;
+
+    fetch(`/api/employees/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newName, email: newEmail, phone: newPhone })
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert(data.message);
+        fetchEmployees(); // Perbarui tabel setelah update
+    })
+    .catch(error => console.error("Error:", error));
+    }
+
+    function cancelEdit(id, originalName, originalEmail, originalPhone) {
+    const row = document.querySelector(`#row-${id}`);
+    
+    // Kembalikan nilai awal jika user membatalkan edit
+    row.querySelector(".name").innerHTML = originalName;
+    row.querySelector(".email").innerHTML = originalEmail;
+    row.querySelector(".phone").innerHTML = originalPhone;
+
+    // Kembalikan tombol edit & delete
+    row.querySelector(".actions").innerHTML = `
+        <button class="action-btn edit" onclick="editEmployee(${id})">
+            <i class="fas fa-pencil-alt"></i>
+        </button>
+        <button class="action-btn delete" onclick="deleteEmployee(${id})">
+            <i class="fas fa-trash"></i>
+        </button>
+    `;
+}
+
+
+
+      function deleteEmployee(id) {
+        if (confirm("Apakah anda yakin ingin menghapus data ini?")) {
+          fetch(`/api/employees/${id}`, { method: "DELETE" })
+            .then((response) => response.json())
+            .then((data) => {
+              alert(data.message);
+              fetchEmployees();
+            });
+        }
+      }
+
+      fetchEmployees();
+    </script>
+  </body>
+</html>

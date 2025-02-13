@@ -77,6 +77,28 @@ button:hover {
     background-color: #2e2810;
 }
 
+button1 {
+    background-color: #a0b848;
+    color: black;
+    width: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+    
+    /* Posisi ke kanan atas */
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+button1:hover {
+    background-color: #90a605;
+}
+
+
 .form{
     padding: 20px;
     background-color: #a0b848;

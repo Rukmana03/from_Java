@@ -2,64 +2,107 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const session = require('express-session');
+const e = require('cors');
 
-// Middleware untuk parsing JSON body
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
-  secret: 'your_secret_key', // Gantilah dengan secret key yang aman
-  resave: false,
-  saveUninitialized: true
+    secret: 'your_secret_key',
+    resave: false,
+    saveUninitialized: true
 }));
-// Endpoint untuk mengirimkan file HTML
+
+let employees = [];
+
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Endpoint untuk registrasi
+app.get("/employees", (req, res) => {
+    res.sendFile(path.join(__dirname, "employees.html"));
+});
+
+app.get('/api/employees', (req, res) => {
+    res.json(employees);
+});
+
+// app.get('/session', (req, res) => {
+//     if (req.session.user) {
+//         res.json(req.session.user);
+//     } else {
+//         res.json({ message: "Tidak ada data dalam session" });
+//     }
+// });
+
 app.post('/register', (req, res) => {
-    const { name, email, phone, address, country, card_number, security, namecard } = req.body;
+    console.log("Data diterima di backend:", req.body);
+    
+    const { detail, delivery, card_detail } = req.body;
 
-    // Validasi input
-    if (name.length < 10) {
-        return res.status(400).json({ message: "Nama harus minimal 10 karakter!", status: 'error' });
+    let errors = [];
+
+    // Validasi Detail
+    if (detail.name.length < 10) {
+        errors.push("Nama harus minimal 10 karakter!");
+    }
+    if (!detail.email.includes('@')) {
+        errors.push("Email harus format yang valid!");
+    }
+    if (detail.phone.length < 11 || isNaN(detail.phone)) {
+        errors.push("Nomor telepon harus minimal 11 digit dan berupa angka!");
     }
 
-    if (!email.includes('@')) {
-        return res.status(400).json({ message: "Email harus format yang valid!", status: 'error' });
+    // Validasi Delivery
+    if (delivery.address.length > 500) {
+        errors.push("Alamat tidak boleh lebih dari 500 karakter!");
+    }
+    if (!delivery.country) {
+        errors.push("Negara harus dipilih!");
     }
 
-    if (phone.length < 11 || isNaN(phone)) {
-        return res.status(400).json({ message: "Nomor telepon harus minimal 11 digit dan berupa angka!", status: 'error' });
+    // Validasi Card Details
+    if (!card_detail.card_number) {
+        errors.push("Nomor kartu harus diisi!");
     }
 
-    if (address.length > 500) {
-        return res.status(400).json({ message: "Alamat tidak boleh lebih dari 500 karakter!", status: 'error' });
+    if (errors.length > 0) {
+        return res.status(400).json({ message: errors.join(", "), status: 'error' });
     }
 
-    if (!country) {
-        return res.status(400).json({ message: "Negara harus dipilih!", status: 'error' });
-    }
+    const newEmployee = {
+        id: employees.length + 1,
+        name: detail.name,
+        email: detail.email,
+        phone: detail.phone
+    };
+    employees.push(newEmployee);
 
-    if (!card_number) {
-        return res.status(400).json({ message: "Nomor kartu harus diisi!", status: 'error' });
-    }
-
-    req.session.user = {
-      name,
-      email,
-      phone,
-      address,
-      country,
-      card_number,
-      security,
-      namecard
-  };
-    // Jika semua validasi berhasil
     res.status(200).json({ message: "Registrasi berhasil!", status: 'success' });
 });
 
-// Menjalankan server pada port 3000
+app.put('/api/employees/:id', (req, res) => {
+    const {id} = req.params;
+    const {name, email, phone} = req.body;
+
+    const employee = employees.find(emp => emp.id == id);
+    
+    if (!employee) {
+        return res.status(404).json({message: "Data tidak ditemukan!"});
+    }
+
+    employee.name = name;
+    employee.email = email;
+    employee.phone = phone;
+
+    res.json({ message: "Data berhasil diperbarui!"}); 
+});
+
+app.delete('/api/employees/:id', (req, res) => {
+    const {id} = req.params;
+    employees = employees.filter(emp => emp.id !=id);
+    res.json({message: "Data berhasil dihapus!"});
+});
+
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server berjalan di http://localhost:${PORT}`));

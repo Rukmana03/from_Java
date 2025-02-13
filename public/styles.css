@@ -1,0 +1,174 @@
+/* Reset CSS */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+}
+
+/* Styling container utama */
+.container {
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+h2 {
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Tombol */
+.btn-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 10px;
+  }
+  
+  .btn {
+    background: #18a2b2;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 100px;
+    cursor: pointer;
+  }
+    
+  .btn:hover {
+    background: #218838;
+  }
+  
+
+/* Tabel */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+th,
+td {
+  padding: 10px;
+  text-align: left;
+  border: 1px solid #000000;
+}
+
+th {
+  background: white;
+  color: black;
+  
+}
+
+tr:hover {
+  background: #f1f1f1;
+}
+
+/* Tombol edit dan delete */
+button {
+  border: none;
+  padding: 5px 8px;
+  cursor: pointer;
+  border-radius: 5px;
+  background: transparent;
+}
+
+button.edit {
+  /* background: #ffc107; */
+  color: #e0a800;
+}
+
+button.delete {
+  /* background: #dc3545; */
+  color: rgb(255, 0, 0);
+}
+
+button.edit:hover {
+  background: #8c6b06;
+}
+
+button.delete:hover {
+  background: #94121f;
+}
+
+/* Form Registrasi */
+form {
+  background: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+button.submit {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+button.submit:hover {
+  background: #0056b3;
+}
+
+button.view-table {
+  background: #6c757d;
+  color: white;
+  padding: 10px;
+  margin-top: 10px;
+  border: none;
+  cursor: pointer;
+}
+
+button.view-table:hover {
+  background: #5a6268;
+}
+
+/* Styling untuk input edit */
+.edit-input {
+  width: 100%;
+  padding: 4px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+}
+
+/* Styling tombol simpan dan batal */
+.save-btn, .cancel-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 0 5px;
+}
+
+.save-btn {
+  color: green;
+}
+
+.cancel-btn {
+  color: red;
+}
+

@@ -11,6 +11,9 @@
 
 <body>
     <div class="container">
+        <div class="buttonadd">
+            <button1 type="button" class="view-table" onclick="location.href='employees'">Lihat Tabel</button>
+        </div>
         <form id="From">  
             <h2>Step 1: Your Details</h2>
             <fieldset>
@@ -109,99 +112,89 @@
                 <button type="submit">Buy It</button> 
         </form>
     </div>
-
+    
     <script>
         document.getElementById("From").addEventListener("submit", function(event) {
             event.preventDefault();
 
-            let name = document.getElementById("name").value;
-            let email = document.getElementById("email").value;
-            let phone = document.getElementById("phone").value;
-            let address = document.getElementById("address").value;
-            let postcode = document.getElementById("postcode").value;
-            let country = document.getElementById("country").value;
-            let card_number= document.getElementById("card_number").value;
-            let security = document.getElementById("security").value;
-            let namecard = document.getElementById("namecard").value;
+            let detail ={
+            name : document.getElementById("name").value,
+            email : document.getElementById("email").value,
+            phone : document.getElementById("phone").value
+            };
 
-            let errorname = document.getElementById("error-name");
-            let erroremail = document.getElementById("error-email");
-            let errorphone = document.getElementById("error-phone");
-            let erroraddress = document.getElementById("error-address");
-            let errorpostcode = document.getElementById("error-postcode");
-            let errorcountry = document.getElementById("error-country");
-            let errorcard_number = document.getElementById("error-card_number");
-            let errorsecurity = document.getElementById("error-security");
-            let errornamecard = document.getElementById("error-namecard");
-            
-            errorname.textContent = "";
-            erroremail.textContent = "";
-            errorphone.textContent = "";
-            erroraddress.textContent = "";
-            errorcountry.textContent = "";
-            errorcard_number.textContent = "";
-            errorsecurity.textContent = "";
-            errornamecard.textContent = "";
+            let delivery ={
+            address : document.getElementById("address").value,
+            postcode :  document.getElementById("postcode").value,
+            country : document.getElementById("country").value
+            };
 
-            let isValid = true;
+            let card_detail ={
+            card_number : document.getElementById("card_number").value,
+            security : document.getElementById("security").value,
+            namecard : document.getElementById("namecard").value
+            };
 
-            if (name.length < 10) {
-                errorname.textContent = "Nama harus minimal 10 karakter!";
-                isValid = false;
+            let formData = { detail, delivery, card_detail};
+            console.log("Data yang dikirim ke backend:", formData);
+
+            let errors = [];
+
+            // Validasi Detail
+            if (detail.name.length < 10) {
+                error.push ({ field: "error-name", message: "Nama harus minimal 10 karakter!"});
+            }
+            if (!detail.email.includes('@')) {
+                error.push({field: "error-email", message: "Email harus format yang valid!" });
+            }
+            if (detail.phone.length < 11 ) {
+                error.push({field: "error-phone", message:"Nomor telepon harus minimal 11 digit dan berupa angka!"});
             }
 
-            // Validasi email (harus format email)
-            if (!email.includes('@')) {
-                erroremail.textContent = "Email harus format yang valid!";
-                isValid = false;
+            // Validasi Card Deliveru
+            if (delivery.address.length > 500) {
+                errors.push({ field: "error-address", message: "Alamat tidak boleh lebih dari 500 karakter!" });
+            }
+            if (!delivery.country) {
+                errors.push({ field: "error-country", message: "Negara harus dipilih!" });
             }
 
-            // Validasi telepon (minimal 11 digit)
-            if (phone.length < 11 ) {
-                errorphone.textContent = "Nomor telepon harus minimal 11 digit dan berupa angka!";
-                isValid = false;
+            // Validasi Card Details
+            if (!card_detail.card_number) {
+            errors.push({ field: "error-card_number", message: "Nomor kartu harus diisi!" });
             }
 
-            // Validasi alamat (maksimal 500 karakter)
-            if (address.length > 500) {
-                erroraddress.textContent = "Alamat tidak boleh lebih dari 500 karakter!";
-                isValid = false;
+            document.querySelectorAll("span[id^='error-']").forEach(span => span.textContent = "");
+
+            if (errors.length > 0) {
+                errors.forEach(error => {
+                    document.getElementById(error.field).textContent = error.message;
+                });
+                return;
             }
 
-            // Validasi negara (dropdown harus dipilih)
-            if (!country) {
-                errorcountry.textContent = "Negara harus dipilih!";
-                isValid = false;
+            function deleteEmployee(id) {
+            if (confirm("Apakah Anda yakin ingin menghapus data ini?")) {
+                fetch(`/api/employees/${id}`, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    fetchEmployees();
+                });
             }
+        }
 
-            // Validasi kartu (wajib diisi)
-            if (!card_number) {
-                errorcard_number.textContent = "Nomor kartu harus diisi!";
-                isValid = false;
-            }
-
-
-            if (isValid) {
                 fetch('http://localhost:3000/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
-                        name: name, 
-                        email: email, 
-                        phone: phone, 
-                        address: address, 
-                        country: country, 
-                        card_number: card_number, 
-                        security: security, 
-                        namecard: namecard })
+                    body: JSON.stringify(formData)
                 })
                 .then(response => response.json())  // Parse response sebagai JSON
                 .then(data => {
-                    // Tampilkan alert dari response backend
+                    console.log("Response dari server:" , data);
                     alert(data.message);
-                    console.log(data);
                     if (data.status === 'success') {
                         document.getElementById("From").reset();  // Reset form jika berhasil
                     }
@@ -211,8 +204,7 @@
                     console.log("error");
                     console.error(error);
                 });
-            }
-        });
+            });
     </script>    
 </body>
 
